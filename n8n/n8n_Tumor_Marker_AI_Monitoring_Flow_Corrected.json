@@ -1,0 +1,112 @@
+{
+  "name": "Tumor Marker AI - Monitoring Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": [
+          {
+            "mode": "everyMinute"
+          }
+        ]
+      },
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "ls /data/report.html"
+      },
+      "name": "Check if Reports Exist",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ !$node['Check if Reports Exist'].json.exists }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "If Report Missing",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        750,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-gmail-address@gmail.com",
+        "toEmail": "recipient-email@gmail.com",
+        "subject": "\u26a0\ufe0f Tumor Marker Report Missing!",
+        "text": "Scheduled report not found. Please check the system.",
+        "smtp": {
+          "host": "smtp.gmail.com",
+          "port": 587,
+          "secure": false,
+          "user": "your-gmail-address@gmail.com",
+          "password": "your-app-password"
+        }
+      },
+      "name": "Send Alert Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check if Reports Exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Reports Exist": {
+      "main": [
+        [
+          {
+            "node": "If Report Missing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Report Missing": {
+      "main": [
+        [
+          {
+            "node": "Send Alert Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "tags": []
+}

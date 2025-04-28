@@ -1,0 +1,80 @@
+{
+  "name": "Tumor Marker AI Workflow",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Read Synthetic Data (CSV)",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "parameters": {
+        "path": "/mnt/data/synthetic_clinical_data.csv"
+      },
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Run Python Script (Train + Predict + Generate Reports)",
+      "type": "n8n-nodes-base.executeCommand",
+      "parameters": {
+        "command": "python3 /mnt/data/train_and_generate_reports.py"
+      },
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Send Email Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "parameters": {
+        "fromEmail": "your-gmail-address@gmail.com",
+        "toEmail": "recipient-email@gmail.com",
+        "subject": "\u2705 AI Tumor Marker Report Generated",
+        "text": "The Tumor Marker AI workflow has completed. Reports are available.",
+        "smtp": {
+          "host": "smtp.gmail.com",
+          "port": 587,
+          "secure": false,
+          "user": "your-gmail-address@gmail.com",
+          "password": "your-app-password"
+        }
+      },
+      "position": [
+        700,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": [
+      {
+        "node": "Read Synthetic Data (CSV)",
+        "type": "main"
+      }
+    ],
+    "Read Synthetic Data (CSV)": [
+      {
+        "node": "Run Python Script (Train + Predict + Generate Reports)",
+        "type": "main"
+      }
+    ],
+    "Run Python Script (Train + Predict + Generate Reports)": [
+      {
+        "node": "Send Email Notification",
+        "type": "main"
+      }
+    ]
+  }
+}
