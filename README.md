@@ -18,9 +18,6 @@ The project demonstrates how to integrate a custom Python script for machine lea
 
 The workflow utilizes Docker to run a custom n8n image containing Python and necessary libraries. Docker Compose orchestrates the service and manages volume mounts for data, scripts, and reports.
 
-![Tumor Marker AI Deployment Diagram](/home/ubuntu/tumor_marker_ai_github_repo/docs/Tumor_Marker AI Deployment Diagram.png)
-
-*(Note: Assumes diagram is placed in docs/ folder within the repo)*
 
 **Components:**
 
